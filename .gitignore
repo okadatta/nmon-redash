@@ -1,0 +1,13 @@
+/docker-compose.yml
+/env
+/excel
+embulk/data/.digdag
+embulk/data/excel/ap/*
+embulk/data/excel/bt/*
+embulk/data/excel/db/*
+embulk/data/excel/oc/*
+embulk/data/excel/old/*
+postgres/backup/*
+postgres-redash-data/
+postgres-nmon-data/
+!.gitkeep

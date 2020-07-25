@@ -1,0 +1,15 @@
+#!/bin/sh
+DIR_BASE=/opt/nmon-redash/embulk/data/excel
+DIR_SERVER1=${DIR_BASE}/server1
+DIR_OLD=${DIR_BASE}/old
+
+find ${DIR_OLD} -name "*.xlsx" | xargs -I% mv % ${DIR_SERVER1}
+
+if [ -e ${DIR_SERVER1}/tmp ]; then
+    if [ ! `ls -l ${DIR_SERVER1}/tmp | wc -l` = 1 ]; then
+        sudo mv ${DIR_SERVER1}/tmp/* ${DIR_SERVER1}/
+    fi
+    sudo rmdir ${DIR_SERVER1}/tmp
+fi
+
+echo 'complete'

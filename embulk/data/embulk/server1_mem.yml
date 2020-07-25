@@ -1,0 +1,38 @@
+in:
+  type: file
+  path_prefix: /var/opt/embulk/data/excel/server1/tmp
+  parser:
+    type: poi_excel
+    skip_header_lines: 1
+    sheets: [MEM]
+    on_convert_error: constant
+    columns:
+    - {name: time, type: timestamp}
+    - {name: memtotal, type: double}
+    - {name: hightotal, type: double}
+    - {name: lowtotal, type: double}
+    - {name: swaptotal, type: double}
+    - {name: memfree, type: double}
+    - {name: highfree, type: double}
+    - {name: lowfree, type: double}
+    - {name: swapfree, type: double}
+    - {name: memshared, type: double}
+    - {name: cached, type: double}
+    - {name: active, type: double}
+    - {name: bigfree, type: double}
+    - {name: buffers, type: double}
+    - {name: swapcached, type: double}
+    - {name: inactive, type: double}
+filters:
+  - type: row
+    conditions:
+    - {column: time, operator: "IS NOT NULL"}
+out:
+  type: postgresql
+  host: postgres-nmon
+  user: postgres
+  password: password
+  database: nmon
+  table: server1_mem
+  mode: insert
+  #default_timezone: "Japan"

@@ -1,0 +1,20 @@
+create table server1_top(
+Time timestamp,
+PID integer,
+CPU real,
+Usr real,
+Sys real,
+Size integer,
+ResSet integer,
+ResText integer,
+ResData integer,
+ShdLib integer,
+MinorFault integer,
+MajorFault integer,
+Command text,
+Threads integer,
+IOwaitTime integer,
+IntervalCPU real,
+WSet integer,
+PRIMARY KEY (Time, PID)
+);

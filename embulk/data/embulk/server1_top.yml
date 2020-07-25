@@ -1,0 +1,40 @@
+in:
+  type: file
+  path_prefix: /var/opt/embulk/data/excel/server1/tmp
+  parser:
+    type: poi_excel
+    skip_header_lines: 1
+    sheets: [TOP]
+    on_convert_error: constant
+    columns:
+    - {name: Time, type: timestamp}
+    - {name: PID, type: long}
+    - {name: CPU, type: double}
+    - {name: Usr, type: double}
+    - {name: Sys, type: double}
+    - {name: Size, type: long}
+    - {name: ResSet, type: long}
+    - {name: ResText, type: long}
+    - {name: ResData, type: long}
+    - {name: ShdLib, type: long}
+    - {name: MinorFault, type: long}
+    - {name: MajorFault, type: long}
+    - {name: Command, type: string}
+    - {name: Threads, type: long}
+    - {name: IOwaitTime, type: long}
+    - {name: IntervalCPU, type: double}
+    - {name: WSet, type: long}
+filters:
+  - type: row
+    conditions:
+    - {column: Time, operator: "IS NOT NULL"}
+    - {column: PID, operator: "IS NOT NULL"}
+out:
+  type: postgresql
+  host: postgres-nmon
+  user: postgres
+  password: password
+  database: nmon
+  table: server1_top
+  mode: insert
+  #default_timezone: "Japan"

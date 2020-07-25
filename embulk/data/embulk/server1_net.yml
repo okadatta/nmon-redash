@@ -1,0 +1,34 @@
+in:
+  type: file
+  path_prefix: /var/opt/embulk/data/excel/server1/tmp
+  parser:
+    type: poi_excel
+    skip_header_lines: 1
+    sheets: [NET]
+    on_convert_error: constant
+    columns:
+    - {name: time, type: timestamp}
+    - {name: ens192read, type: double}
+    - {name: ens224read, type: double}
+    - {name: loread, type: double}
+    - {name: ens192write, type: double}
+    - {name: ens224write, type: double}
+    - {name: lowrite, type: double}
+    - {name: ens192total, type: double}
+    - {name: ens224total, type: double}
+    - {name: lototal, type: double}
+    - {name: TotalRead, type: double}
+    - {name: TotalWrite, type: double}
+filters:
+  - type: row
+    conditions:
+    - {column: time, operator: "IS NOT NULL"}
+out:
+  type: postgresql
+  host: postgres-nmon
+  user: postgres
+  password: password
+  database: nmon
+  table: server1_net
+  mode: insert
+  #default_timezone: "Japan"

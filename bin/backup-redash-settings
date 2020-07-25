@@ -1,0 +1,18 @@
+#!/bin/sh
+source /opt/nmon-redash/bin/.params
+
+# create directory
+mkdir -p ${DIR_HOST_PERMANENT}
+
+# decide file name
+F_NAME=redash-backup-`date +"%Y%m%d"`-`date +"%H%M%S"`.gz
+
+# backup
+echo 'creating backup file to '\'${DIR_HOST_PERMANENT}'/'${F_NAME}\'
+sudo mv ${DIR_HOST_PERMANENT} ${DIR_HOST}
+docker container exec nmon-redash_postgres_1 /bin/bash -c 'pg_dump -U postgres postgres | gzip > '${DIR_CONTAINER}'/'${F_NAME}
+sudo cp -f ${DIR_HOST}/${F_NAME} ${DIR_HOST}/redash-backup-latest.gz
+sudo mv ${DIR_HOST} ${DIR_HOST_PERMANENT}
+
+echo 'complete'
+

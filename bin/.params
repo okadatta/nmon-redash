@@ -1,0 +1,8 @@
+#!/bin/sh
+
+DIR_CONTAINER=/var/lib/postgresql/data/backup
+DIR_HOST=/opt/nmon-redash/postgres-redash-data/backup
+DIR_HOST_PERMANENT=/opt/nmon-redash/postgres/backup
+
+COMPOSE_PROJECT_NAME=nmon-redash
+COMPOSE_FILE=/opt/nmon-redash/docker-compose.yml

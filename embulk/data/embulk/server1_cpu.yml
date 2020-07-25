@@ -1,0 +1,31 @@
+in:
+  type: file
+  path_prefix: /var/opt/embulk/data/excel/server1/tmp
+  parser:
+    type: poi_excel
+    skip_header_lines: 1
+    sheets: [CPU_ALL]
+    on_convert_error: constant
+    columns:
+    - {name: time, type: timestamp}
+    - {name: usr, type: double}
+    - {name: sys, type: double}
+    - {name: wait, type: double}
+    - {name: idle, type: double}
+    - {name: steal, type: double}
+    - {name: busy, type: double}
+    - {name: cpus, type: double}
+    - {name: cpu, type: double, column_number: J}
+filters:
+  - type: row
+    conditions:
+    - {column: time, operator: "IS NOT NULL"}
+out:
+  type: postgresql
+  host: postgres-nmon
+  user: postgres
+  password: password
+  database: nmon
+  table: server1_cpu
+  mode: insert
+  #default_timezone: "Japan"

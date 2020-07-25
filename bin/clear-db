@@ -1,0 +1,20 @@
+#!/bin/sh
+source /opt/nmon-redash/bin/.params
+
+# define target
+declare -ar tables=(
+server1_top server1_mem server1_cpu server1_disk server1_net server1_space 
+)
+
+# define function
+
+truncate() {
+    docker exec nmon-redash_postgres-nmon_1 bash -c 'psql -U postgres -d nmon -c "truncate table '${1}';"'
+}
+
+# truncate tables
+for table in ${tables[@]}; do
+    truncate ${table}
+done
+echo 'complete'
+

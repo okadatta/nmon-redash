@@ -1,0 +1,37 @@
+#!/bin/sh
+source /opt/nmon-redash/bin/.params
+C_NAME=nmon-redash_postgres_1
+
+# decide backup file to use
+F_NAME=redash-backup-latest.gz
+if [ -n "${1}" ]; then
+    F_NAME=${1}
+fi
+echo 'restore redash configuration from backup file '\'${F_NAME}\'
+
+# check backup file
+if [[ ! -f ${DIR_HOST_PERMANENT}/${F_NAME} ]]; then
+    echo 'backup file '\'${F_NAME}\'' does not exist in '\'${DIR_HOST_PERMANENT}\'
+    exit 1
+fi
+
+# stop service
+docker-compose --file ${COMPOSE_FILE} -p ${COMPOSE_PROJECT_NAME} stop
+docker container start ${C_NAME}
+
+# wipe
+echo 'wipe existing data...'
+docker container exec ${C_NAME} /bin/bash -c 'psql -c "drop database if exists postgres" -U postgres template1'
+
+# restore
+echo 'restore...'
+sudo mv ${DIR_HOST_PERMANENT} ${DIR_HOST}
+docker container exec ${C_NAME} /bin/bash -c 'psql -c "create database postgres" -U postgres template1'
+docker container exec ${C_NAME} /bin/bash -c 'zcat '${DIR_CONTAINER}'/'${F_NAME}' | psql -U postgres -d postgres'
+sudo mv ${DIR_HOST} ${DIR_HOST_PERMANENT}
+
+# start service
+docker container stop ${C_NAME}
+docker-compose --file ${COMPOSE_FILE} -p ${COMPOSE_PROJECT_NAME} start
+echo 'complete'
+
